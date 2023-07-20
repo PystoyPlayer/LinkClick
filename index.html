@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flipclock/0.7.8/flipclock.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/flipclock/0.7.8/flipclock.min.js"></script>
+  <style>
+    body {
+      background-color: #f4f4f4;
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .clock {
+      font-size: 1.5em;
+      color: #ff6347;
+      margin: 2em;
+      display: flex;
+      justify-content: center;
+    }
+
+    .flip-clock-wrapper ul {
+      padding-top: 20px;
+    }
+
+    .flip-clock-wrapper ul li {
+      width: 60px;
+      height: 80px;
+    }
+
+    .flip-clock-wrapper ul li .inn {
+      line-height: 80px;
+    }
+
+    .flip-clock-label {
+      font-size: 1em; /* Увеличиваем размер шрифта до первоначального значения */
+      position: absolute;
+      width: 120px; /* ширина равна ширине двух квадратов таймера */
+      text-align: center;
+      top: 70px;
+      left: 50%;
+      transform: translateX(-50%); /* центрируем по горизонтали */
+    }
+
+    #series-list {
+      list-style: none;
+      padding: 0;
+      width: 60%;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    #series-list li {
+      background-color: #333;
+      color: #fff;
+      margin: 5px;
+      padding: 10px;
+      border-radius: 5px;
+      width: calc(30% - 10px);
+      text-align: center;
+    }
+    .flip-clock-divider .flip-clock-label {
+        position: absolute;
+        width: 100%; /* Делаем ширину равной ширине родительского блока */
+        top: -50px; /* Можно регулировать по высоте */
+        font-size: 1em;
+        text-align: center; /* Центрируем надпись */
+    }
+    .flip-clock-divider .flip-clock-label {
+      display: none; /* это скрывает надписи */
+    }
+    
+    .timer-header {
+      text-align: center;
+      font-size: 1.2em;
+      color: #333;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+
+    <h2 class="timer-header">Следующая серия через:</h2>
+    <div class="clock"></div>
+
+    <ul id="series-list">
+    </ul>
+<script>
+// Задайте даты выпуска серий
+var seriesReleaseDates = ["2023-07-14T07:15:00", "2023-07-14T07:15:00", "2023-07-21T07:15:00", "2023-07-28T07:15:00", "2023-08-04T07:15:00", "2023-08-11T07:15:00", "2023-08-18T07:15:00", "2023-08-25T07:15:00", "2023-09-01T07:15:00", "2023-09-08T07:15:00", "2023-09-15T07:15:00", "2023-09-22T07:15:00"];
+
+// Определите сегодняшнюю дату и время
+var now = new Date().getTime() + new Date().getTimezoneOffset() * 60000 + 3 * 60 * 60 * 1000; // Московское время
+
+// Найдите ближайшую дату выпуска
+var nextReleaseDate;
+for (var i = 0; i < seriesReleaseDates.length; i++) {
+  var releaseDate = new Date(seriesReleaseDates[i]).getTime();
+  if (releaseDate > now) {
+    nextReleaseDate = releaseDate;
+    break;
+  }
+}
+
+var clock = $('.clock').FlipClock((nextReleaseDate - now) / 1000, {
+  clockFace: 'DailyCounter',
+  countdown: true
+});
+
+function drawSeriesList() {
+  // Создайте список серий
+  var seriesList = document.getElementById("series-list");
+  seriesList.innerHTML = ""; // очищаем список
+  
+  for (var i = 0; i < seriesReleaseDates.length; i++) {
+    var li = document.createElement("li");
+    var releaseDate = new Date(seriesReleaseDates[i]).getTime();
+    if (releaseDate > now) {
+      li.appendChild(document.createTextNode("Серия " + (i + 1) + " - " + new Date(seriesReleaseDates[i]).toLocaleDateString()));
+    } else {
+      li.appendChild(document.createTextNode("Серия " + (i + 1) + " - Уже вышла"));
+    }
+    seriesList.appendChild(li);
+  }
+}
+
+drawSeriesList();
+
+// Обновите таймер каждую секунду
+var x = setInterval(function() {
+
+  // Получите сегодняшнюю дату и время
+  now = new Date().getTime() + new Date().getTimezoneOffset() * 60000 + 3 * 60 * 60 * 1000; // Московское время
+  
+  // Найдите расстояние между сейчас и датой выпуска
+  var distance = nextReleaseDate - now;
+
+  // Если таймер истек, найдите следующую дату выпуска
+  if (distance < 0) {
+    for (var i = 0; i < seriesReleaseDates.length; i++) {
+      var releaseDate = new Date(seriesReleaseDates[i]).getTime();
+      if (releaseDate > now) {
+        nextReleaseDate = releaseDate;
+        break;
+      }
+    }
+    clock.setTime((nextReleaseDate - now) / 1000);
+    clock.start();
+
+    // Список серий также нужно обновить
+    drawSeriesList();
+  }
+}, 1000);
+</script>
+
+</body>
+</html>
