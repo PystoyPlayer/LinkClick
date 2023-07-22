@@ -1,120 +1,130 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flipclock/0.7.8/flipclock.css" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/flipclock/0.7.8/flipclock.min.js"></script>
-    <style>
-      body {
-        background-color: #f4f4f4;
-        font-family: Arial, sans-serif;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        height: 100vh;
-        margin: 0;
-      }
+<head>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flipclock/0.7.8/flipclock.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/flipclock/0.7.8/flipclock.min.js"></script>
+  <style>
+    body {
+      background-color: #f4f4f4;
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
 
-      .clock {
-        font-size: 1.5em;
-        color: #ff6347;
-        margin: 2em;
-        display: flex;
-        justify-content: center;
-      }
+    .clock {
+      font-size: 1.5em;
+      color: #ff6347;
+      margin: 2em;
+      display: flex;
+      justify-content: center;
+    }
 
-      .flip-clock-wrapper ul {
-        padding-top: 20px;
-      }
+    .flip-clock-wrapper ul {
+      padding-top: 20px;
+    }
 
-      .flip-clock-wrapper ul li {
-        width: 60px;
-        height: 80px;
-      }
+    .flip-clock-wrapper ul li {
+      width: 60px;
+      height: 80px;
+    }
 
-      .flip-clock-wrapper ul li .inn {
-        line-height: 80px;
-      }
+    .flip-clock-wrapper ul li .inn {
+      line-height: 80px;
+    }
 
-      .flip-clock-label {
-        font-size: 1em;
-        /* Увеличиваем размер шрифта до первоначального значения */
-        position: absolute;
-        width: 120px;
-        /* ширина равна ширине двух квадратов таймера */
-        text-align: center;
-        top: 70px;
-        left: 50%;
-        transform: translateX(-50%);
-        /* центрируем по горизонтали */
-      }
+    .flip-clock-label {
+      font-size: 1em;
+      position: absolute;
+      width: 120px;
+      text-align: center;
+      top: 70px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
 
-      #series-list {
-        list-style: none;
-        padding: 0;
-        width: 60%;
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-      }
+    #series-list {
+      list-style: none;
+      padding: 0;
+      width: 60%;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
 
-      #series-list li {
-        background-color: #333;
-        color: #fff;
-        margin: 5px;
-        padding: 10px;
-        border-radius: 5px;
-        width: calc(30% - 10px);
-        text-align: center;
-      }
+    #series-list li {
+      background-color: #333;
+      color: #fff;
+      margin: 5px;
+      padding: 10px;
+      border-radius: 5px;
+      width: calc(30% - 10px);
+      text-align: center;
+      box-shadow: 0px 3.5px 4px rgba(0, 0, 0, 0.5); /* добавляем тень */
+    }
 
-      .flip-clock-divider .flip-clock-label {
-        display: none;
-        /* это скрывает надписи */
-      }
+    .flip-clock-divider .flip-clock-label {
+      display: none;
+    }
 
-      .timer-header {
-        text-align: center;
-        font-size: 1.5em;
-        color: #333;
-        margin-bottom: -20px;
-        /* уменьшенное значение отступа */
+    .timer-header {
+      text-align: center;
+      font-size: 1.5em;
+      color: #333;
+      margin-bottom: -20px;
+    }
+
+    .watch-link {
+      color: #ddd; /* меняем цвет на светлый */
+      text-decoration: none;
+    }
+    
+    .watch-link:hover {
+      color: #fff; /* меняем цвет при наведении */
+    }
+  </style>
+</head>
+<body>
+  <h2 class="timer-header">Следующая серия через:</h2>
+  <div class="clock"></div>
+  <ul id="series-list"></ul>
+  <script>
+    var seriesReleaseDates = ["2023-07-14T07:30:00", "2023-07-14T07:30:00", "2023-07-21T07:30:00", "2023-07-28T07:30:00", "2023-08-04T07:30:00", "2023-08-11T07:30:00", "2023-08-18T07:30:00", "2023-08-25T07:30:00", "2023-09-01T07:30:00", "2023-09-08T07:30:00", "2023-09-15T07:30:00", "2023-09-22T07:30:00"];
+    var now = new Date().getTime() + new Date().getTimezoneOffset() * 60000 + 3 * 60 * 60 * 1000; // Московское время
+    var nextReleaseDate;
+    for (var i = 0; i < seriesReleaseDates.length; i++) {
+      var releaseDate = new Date(seriesReleaseDates[i]).getTime();
+      if (releaseDate > now) {
+        nextReleaseDate = releaseDate;
+        break;
       }
-    </style>
-  </head>
-  <body>
-    <h2 class="timer-header">Следующая серия через:</h2>
-    <div class="clock"></div>
-    <ul id="series-list"></ul>
-    <script>
-      // Даты выхода серий
-      var seriesReleaseDates = ["2023-07-14T07:30:00", "2023-07-14T07:30:00", "2023-07-21T07:30:00", "2023-07-28T07:30:00", "2023-08-04T07:30:00", "2023-08-11T07:30:00", "2023-08-18T07:30:00", "2023-08-25T07:30:00", "2023-09-01T07:30:00", "2023-09-08T07:30:00", "2023-09-15T07:30:00", "2023-09-22T07:30:00"];
-      var now = new Date().getTime() + new Date().getTimezoneOffset() * 60000 + 3 * 60 * 60 * 1000; // Московское время
-      var nextReleaseDate;
-      for (var i = 0; i < seriesReleaseDates.length; i++) {
-        var releaseDate = new Date(seriesReleaseDates[i]).getTime();
-        if (releaseDate > now) {
-          nextReleaseDate = releaseDate;
-          break;
-        }
-      }
-      var clock = $('.clock').FlipClock((nextReleaseDate - now) / 1000, {
-        clockFace: 'DailyCounter',
+    }
+    var clock = $('.clock').FlipClock((nextReleaseDate - now) / 1000, {
+      clockFace: 'DailyCounter',
         countdown: true
       });
 
       function drawSeriesList() {
-        // Создайте список серий
+        // Create the series list
         var seriesList = document.getElementById("series-list");
-        seriesList.innerHTML = ""; // очищаем список
+        seriesList.innerHTML = ""; // clear the list
         for (var i = 0; i < seriesReleaseDates.length; i++) {
           var li = document.createElement("li");
           var releaseDate = new Date(seriesReleaseDates[i]).getTime();
           if (releaseDate > now) {
-            li.appendChild(document.createTextNode("Серия " + (i + 1) + " - " + new Date(seriesReleaseDates[i]).toLocaleDateString()));
+            li.appendChild(document.createTextNode("Эпизод " + (i + 1) + " - " + new Date(seriesReleaseDates[i]).toLocaleDateString())  );
           } else {
-            li.appendChild(document.createTextNode("Серия " + (i + 1) + " - Уже вышла"));
+            var a = document.createElement('a');
+            a.href = "https://t.me/+9uY30WOLsFoyNjky"; // updated link
+            a.textContent = "Смотреть"; // updated text
+            a.className = 'watch-link'; // add class to the link
+            li.appendChild(document.createTextNode("Эпизод " + (i + 1) + " - "));
+            li.appendChild(a);
+            li.className = 'released'; // add class to the li
           }
           seriesList.appendChild(li);
         }
