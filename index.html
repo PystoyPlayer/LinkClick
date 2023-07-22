@@ -4,103 +4,113 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flipclock/0.7.8/flipclock.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/flipclock/0.7.8/flipclock.min.js"></script>
-  <style>
-    body {
-      background-color: #f4f4f4;
-      font-family: Arial, sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      margin: 0;
-    }
+    <style>
+      body {
+        background-color: #f4f4f4;
+        font-family: 'Arial', serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        margin: 0;
+      }
 
-    .clock {
-      font-size: 1.5em;
-      color: #ff6347;
-      margin: 2em;
-      display: flex;
-      justify-content: center;
-    }
+      .clock {
+        font-size: 1.5em;
+        color: #ff6347;
+        margin: 2em;
+        display: flex;
+        justify-content: center;
+      }
 
-    .flip-clock-wrapper ul {
-      padding-top: 20px;
-    }
+      .flip-clock-wrapper ul {
+        padding-top: 20px;
+      }
 
-    .flip-clock-wrapper ul li {
-      width: 60px;
-      height: 80px;
-    }
+      .flip-clock-wrapper ul li {
+        width: 60px;
+        height: 80px;
+      }
 
-    .flip-clock-wrapper ul li .inn {
-      line-height: 80px;
-    }
+      .flip-clock-wrapper ul li .inn {
+        line-height: 80px;
+      }
 
-    .flip-clock-label {
-      font-size: 1em;
-      position: absolute;
-      width: 120px;
-      text-align: center;
-      top: 70px;
-      left: 50%;
-      transform: translateX(-50%);
-    }
+      .flip-clock-label {
+        font-size: 1em;
+        position: absolute;
+        width: 120px;
+        text-align: center;
+        top: 70px;
+        left: 50%;
+        transform: translateX(-50%);
+      }
 
-    #series-list {
-      list-style: none;
-      padding: 0;
-      width: 60%;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-
-    #series-list li {
-      background-color: #333;
-      color: #fff;
-      margin: 5px;
-      padding: 10px;
-      border-radius: 5px;
-      width: calc(30% - 10px);
-      text-align: center;
-      box-shadow: 0px 3.5px 4px rgba(0, 0, 0, 0.5); /* добавляем тень */
-    }
-
-    .flip-clock-divider .flip-clock-label {
-      display: none;
-    }
-
-    .timer-header {
-      text-align: center;
-      font-size: 1.5em;
-      color: #333;
-      margin-bottom: -20px;
-    }
-
-    .watch-link {
-      color: #ddd; /* меняем цвет на светлый */
-      text-decoration: none;
-    }
-    
-    .watch-link:hover {
-      color: #fff; /* меняем цвет при наведении */
-    }
-    @media screen and (max-width: 600px) {
       #series-list {
-        width: 90%; /* увеличиваем ширину списка на мобильных устройствах */
-        display: flex; /* включаем flexbox */
-        flex-wrap: wrap; /* разрешаем перенос элементов на новую строку, если они не помещаются */
-        justify-content: space-between; /* распределяем элементы равномерно по горизонтали */
+        list-style: none;
+        padding: 0;
+        width: 60%;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between; /* изменено с space-around на space-between */
+      }
+
+      #series-list li {
+        background-color: #333;
+        color: #fff;
+        margin: 5px;
+        padding: 10px;
+        border-radius: 5px;
+        width: calc(30% - 10px);
+        text-align: center;
+        box-shadow: 0px 3.2px 4.1px rgba(0, 0, 0, 0.55);
+        flex-shrink: 0; /* добавлено для предотвращения сжатия столбцов */
+        white-space: nowrap; /* добавлено для отключения переноса текста на новую строку */
+      }
+
+      .flip-clock-divider .flip-clock-label {
+        display: none;
+      }
+
+      .timer-header {
+        text-align: center;
+        font-size: 1.5em;
+        color: #333;
+        margin-bottom: -20px;
+      }
+
+      .watch-link {
+        color: #ddd; 
+        text-decoration: none;
+      }
+
+      .watch-link:hover {
+        color: #fff;
       }
       
       #series-list li {
-        width: calc(45% - 10px); /* делаем плашки шире на мобильных устройствах */
-        font-size: 0.8em; /* уменьшаем размер шрифта на мобильных устройствах, если нужно */
-        margin-bottom: 10px; /* добавляем нижний отступ, чтобы элементы не прилипали друг к другу по вертикали */
+        background-color: #333;
+        color: #fff;
+        margin: 5px;
+        padding: 10px;
+        border-radius: 5px;
+        width: calc(30% - 10px);
+        text-align: center;
+        box-shadow: 0px 3.2px 4.1px rgba(0, 0, 0, 0.55);
+        flex-shrink: 0; 
+        white-space: normal; /* изменено с nowrap на normal */
       }
-    }
-  </style>
+
+      /* медиа-запросы для средних разрешений */
+      @media screen and (min-width: 601px) and (max-width: 900px) {
+        #series-list li {
+          flex-basis: 45%; /* изменено на большее значение */
+          margin: 2.5%; 
+          font-size: 1em;
+        }
+      }
+    </style>
 </head>
 <body>
   <h2 class="timer-header">Следующая серия через:</h2>
