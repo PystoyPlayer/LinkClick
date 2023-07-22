@@ -116,13 +116,13 @@
           var li = document.createElement("li");
           var releaseDate = new Date(seriesReleaseDates[i]).getTime();
           if (releaseDate > now) {
-            li.appendChild(document.createTextNode("Эпизод " + (i + 1) + " - " + new Date(seriesReleaseDates[i]).toLocaleDateString())  );
+            li.appendChild(document.createTextNode("Episode " + (i + 1) + " - " + new Date(seriesReleaseDates[i]).toLocaleDateString())  );
           } else {
             var a = document.createElement('a');
             a.href = "https://t.me/+9uY30WOLsFoyNjky"; // updated link
             a.textContent = "Смотреть"; // updated text
             a.className = 'watch-link'; // add class to the link
-            li.appendChild(document.createTextNode("Эпизод " + (i + 1) + " - "));
+            li.appendChild(document.createTextNode("Episode " + (i + 1) + " - "));
             li.appendChild(a);
             li.className = 'released'; // add class to the li
           }
